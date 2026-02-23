@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────────────────────────
+# What it does:
+#   Every time process-report.js pushes a new run to this repo,
+#   GitHub Pages is redeployed automatically — the dashboard updates
+#   within ~30 seconds of a test run finishing.
+# ──────────────────────────────────────────────────────────────────
+
+name: Deploy Dashboard
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages:    write
+  id-token: write
+
+# Only one deploy runs at a time; a newer push cancels a queued one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url:  ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Serve the whole repo root:
+          #   index.html          ← the SPA
+          #   data/manifest.json  ← run history (updated by CI)
+          #   data/runs/*.json    ← per-run snapshots
+          path: '.'
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4

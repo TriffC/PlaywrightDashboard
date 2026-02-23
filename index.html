@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playwright · Runs</title>
+
+  <!-- Syne (geometric display) + JetBrains Mono (data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ══ Tokens ══════════════════════════════════════════════ */
+    :root {
+      --bg:        #080b0e;
+      --surface:   #0d1117;
+      --surface2:  #131920;
+      --border:    #1e2830;
+      --border2:   #263040;
+      --muted:     #4a5568;
+      --dim:       #718096;
+      --body:      #c9d5e0;
+      --head:      #edf2f7;
+      --amber:     #f6ad55;
+      --amber-d:   #c05621;
+      --green:     #68d391;
+      --red:       #fc8181;
+      --yellow:    #f6e05e;
+      --blue:      #63b3ed;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+      --display:   'Syne', sans-serif;
+    }
+
+    /* ══ Reset ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--body);
+      min-height: 100vh;
+      /* subtle grid lines */
+      background-image:
+        linear-gradient(rgba(30,40,48,.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,40,48,.35) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: 0 0;
+    }
+
+    /* ══ Header ══════════════════════════════════════════════ */
+    .header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,11,14,.92);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 3vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--amber);
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(246,173,85,.3);
+    }
+
+    .logo-name {
+      font-family: var(--display);
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--head);
+      letter-spacing: -.01em;
+    }
+
+    .logo-sub {
+      font-family: var(--mono);
+      font-size: .58rem;
+      color: var(--muted);
+      display: block;
+      letter-spacing: .06em;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .updated-tag {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: .68rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--body);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+      letter-spacing: .04em;
+    }
+    .btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* ══ Main layout ═════════════════════════════════════════ */
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 40px);
+    }
+
+    /* ══ Section label ═══════════════════════════════════════ */
+    .section-label {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* ══ Filters ══════════════════════════════════════════════ */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber);
+      background: var(--surface);
+    }
+
+    .filter-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 130px;
+    }
+
+    .filter-field label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .filter-field select,
+    .filter-field input {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--body);
+      font-family: var(--mono);
+      font-size: .72rem;
+      padding: 6px 9px;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color .15s;
+    }
+
+    .filter-field select:focus,
+    .filter-field input:focus {
+      border-color: var(--amber);
+    }
+
+    .filter-field input::placeholder { color: var(--muted); }
+
+    /* ══ KPI strip ════════════════════════════════════════════ */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .kpi {
+      background: var(--surface);
+      padding: 18px 16px 14px;
+      position: relative;
+    }
+
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--border2);
+    }
+
+    .kpi.accent::before  { background: var(--amber); }
+    .kpi.success::before { background: var(--green); }
+    .kpi.danger::before  { background: var(--red); }
+    .kpi.warn::before    { background: var(--yellow); }
+
+    .kpi-label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .kpi-val {
+      font-family: var(--display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--head);
+      line-height: 1;
+    }
+
+    .kpi.success .kpi-val { color: var(--green); }
+    .kpi.danger  .kpi-val { color: var(--red);   }
+    .kpi.warn    .kpi-val { color: var(--yellow); }
+    .kpi.accent  .kpi-val { color: var(--amber);  }
+
+    .kpi-sub {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    /* ══ Charts ══════════════════════════════════════════════ */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 800px) {
+      .charts-row { grid-template-columns: 1fr; }
+    }
+
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+
+    .chart-box h3 {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    canvas { max-height: 200px; }
+
+    /* ══ Table card ══════════════════════════════════════════ */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .table-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .table-title {
+      font-family: var(--display);
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--head);
+    }
+
+    .run-badge {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--muted);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      padding: 9px 14px;
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 11px 14px;
+      font-size: .78rem;
+      border-bottom: 1px solid rgba(30,40,48,.6);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr {
+      transition: background .1s;
+    }
+
+    tbody tr:hover td {
+      background: rgba(246,173,85,.03);
+    }
+
+    /* ══ Status badges ════════════════════════════════════════ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px 3px 6px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .badge-passed  { background: rgba(104,211,145,.08); color: var(--green);  border: 1px solid rgba(104,211,145,.2); }
+    .badge-passed::before  { background: var(--green); box-shadow: 0 0 4px var(--green); }
+
+    .badge-failed  { background: rgba(252,129,129,.08); color: var(--red);    border: 1px solid rgba(252,129,129,.2); }
+    .badge-failed::before  { background: var(--red); box-shadow: 0 0 4px var(--red); }
+
+    .badge-flaky   { background: rgba(246,224,94,.08);  color: var(--yellow); border: 1px solid rgba(246,224,94,.2); }
+    .badge-flaky::before   { background: var(--yellow); box-shadow: 0 0 4px var(--yellow); }
+
+    /* ══ Progress bar ════════════════════════════════════════ */
+    .prog { display: flex; align-items: center; gap: 7px; }
+
+    .prog-track {
+      width: 64px; height: 4px;
+      background: var(--border2);
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green);
+    }
+
+    .prog-fill.mid { background: var(--yellow); }
+    .prog-fill.low { background: var(--red); }
+
+    .prog-pct {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--dim);
+      min-width: 32px;
+    }
+
+    /* ══ Counts cell ═════════════════════════════════════════ */
+    .counts {
+      font-family: var(--mono);
+      font-size: .68rem;
+      white-space: nowrap;
+    }
+    .c-p { color: var(--green);  }
+    .c-f { color: var(--red);    }
+    .c-s { color: var(--muted);  }
+    .c-k { color: var(--yellow); }
+
+    /* ══ Mono cells ══════════════════════════════════════════ */
+    .mono-cell {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--dim);
+    }
+
+    .sha {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--blue);
+    }
+
+    .branch-tag {
+      font-family: var(--mono);
+      font-size: .65rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      padding: 2px 7px;
+      border-radius: 2px;
+      color: var(--body);
+    }
+
+    .dur-cell {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--dim);
+    }
+
+    /* ══ Links ════════════════════════════════════════════════ */
+    a { color: var(--amber); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .link-sm {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--amber);
+    }
+
+    /* ══ Empty / Loading ══════════════════════════════════════ */
+    .empty-state, .loading-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: var(--muted);
+    }
+
+    .empty-state h3 {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--head);
+      margin: 12px 0 10px;
+    }
+
+    .empty-state p {
+      font-size: .82rem;
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .empty-state code {
+      font-family: var(--mono);
+      font-size: .78rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 2px;
+    }
+
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--amber);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══ Responsive ══════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .header-right .updated-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ Header ══════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">🎭</div>
+      <div>
+        <div class="logo-name">Playwright</div>
+        <span class="logo-sub">test run dashboard</span>
+      </div>
+    </a>
+    <div class="header-right">
+      <span class="updated-tag" id="updated-tag">—</span>
+      <button class="btn" onclick="reload()">↻ refresh</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══ Main ════════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-field">
+      <label>Project</label>
+      <select id="f-proj" onchange="applyFilters()">
+        <option value="">All</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Environment</label>
+      <select id="f-env" onchange="applyFilters()">
+        <option value="">All</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Status</label>
+      <select id="f-status" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="passed">Passed</option>
+        <option value="failed">Failed</option>
+        <option value="flaky">Flaky</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label>Period</label>
+      <select id="f-days" onchange="applyFilters()">
+        <option value="7">7 days</option>
+        <option value="30" selected>30 days</option>
+        <option value="90">90 days</option>
+        <option value="0">All time</option>
+      </select>
+    </div>
+    <div class="filter-field" style="flex:1;min-width:160px">
+      <label>Branch / SHA</label>
+      <input id="f-q" type="text" placeholder="main, feat/*, abc1234…" oninput="applyFilters()"/>
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="section-label">overview</div>
+  <div class="kpi-strip" id="kpi-strip">
+    <div class="kpi accent"><div class="kpi-label">Runs</div><div class="kpi-val" id="k-runs">—</div><div class="kpi-sub">in period</div></div>
+    <div class="kpi success"><div class="kpi-label">Pass rate</div><div class="kpi-val" id="k-rate">—</div><div class="kpi-sub" id="k-rate-sub">—</div></div>
+    <div class="kpi danger"><div class="kpi-label">Failed</div><div class="kpi-val" id="k-fail">—</div><div class="kpi-sub">runs</div></div>
+    <div class="kpi warn"><div class="kpi-label">Flaky</div><div class="kpi-val" id="k-flaky">—</div><div class="kpi-sub">runs</div></div>
+    <div class="kpi"><div class="kpi-label">Avg duration</div><div class="kpi-val" id="k-dur">—</div><div class="kpi-sub">per run</div></div>
+    <div class="kpi"><div class="kpi-label">Tests run</div><div class="kpi-val" id="k-tests">—</div><div class="kpi-sub">total</div></div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-box">
+      <h3>pass rate — last 40 runs</h3>
+      <canvas id="c-trend"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>status breakdown</h3>
+      <canvas id="c-donut"></canvas>
+    </div>
+  </div>
+
+  <!-- Run history table -->
+  <div class="section-label" style="margin-top:8px">run history</div>
+  <div class="table-card">
+    <div class="table-head">
+      <span class="table-title">Runs</span>
+      <span class="run-badge" id="run-count">0 runs</span>
+    </div>
+    <div class="table-wrap" id="table-wrap">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading…</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Dashboard JS
+   ═══════════════════════════════════════════════════════════════════ */
+
+let allRuns = [], filtered = [];
+let tChart = null, dChart = null;
+
+Chart.defaults.color       = '#4a5568';
+Chart.defaults.borderColor = '#1e2830';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size   = 10;
+
+// ── Load data ───────────────────────────────────────────────────
+
+async function load() {
+  try {
+    const r = await fetch('./data/manifest.json?_=' + Date.now());
+    if (!r.ok) throw new Error('not found');
+    const m = await r.json();
+    allRuns = m.runs || [];
+    document.getElementById('updated-tag').textContent =
+      'updated ' + fmtDate(m.lastUpdated);
+  } catch {
+    document.getElementById('updated-tag').textContent = 'demo mode';
+    allRuns = demoData();
+  }
+
+  // Populate filter dropdowns
+  const pSel = byId('f-proj');
+  const eSel = byId('f-env');
+  unique(allRuns, 'project').forEach(v    => addOption(pSel, v));
+  unique(allRuns, 'environment').forEach(v => addOption(eSel, v));
+
+  applyFilters();
+}
+
+function addOption(sel, val) {
+  const o = document.createElement('option');
+  o.value = o.textContent = val;
+  sel.appendChild(o);
+}
+
+function unique(arr, key) {
+  return [...new Set(arr.map(r => r[key]).filter(Boolean))].sort();
+}
+
+// ── Filter ──────────────────────────────────────────────────────
+
+function applyFilters() {
+  const proj   = byId('f-proj').value;
+  const env    = byId('f-env').value;
+  const status = byId('f-status').value;
+  const days   = +byId('f-days').value;
+  const q      = byId('f-q').value.toLowerCase();
+  const cutoff = days ? new Date(Date.now() - days * 86400000) : null;
+
+  filtered = allRuns.filter(r => {
+    if (proj   && r.project     !== proj)   return false;
+    if (env    && r.environment !== env)    return false;
+    if (status && r.status      !== status) return false;
+    if (cutoff && new Date(r.timestamp) < cutoff) return false;
+    if (q) {
+      const hay = [r.branch, r.commitSha, r.project, r.environment].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  renderKPIs();
+  renderCharts();
+  renderTable();
+}
+
+// ── KPIs ────────────────────────────────────────────────────────
+
+function renderKPIs() {
+  const n      = filtered.length;
+  const passed = filtered.filter(r => r.status === 'passed').length;
+  const failed = filtered.filter(r => r.status === 'failed').length;
+  const flaky  = filtered.filter(r => r.status === 'flaky').length;
+  const rate   = n ? Math.round(passed / n * 100) : 0;
+  const avgDur = n ? filtered.reduce((s, r) => s + (r.duration || 0), 0) / n : 0;
+  const tests  = filtered.reduce((s, r) => s + (r.total || 0), 0);
+
+  set('k-runs',  n);
+  set('k-rate',  rate + '%');
+  set('k-rate-sub', `${passed} of ${n} runs`);
+  set('k-fail',  failed);
+  set('k-flaky', flaky);
+  set('k-dur',   fmtDur(avgDur));
+  set('k-tests', tests.toLocaleString());
+}
+
+// ── Charts ──────────────────────────────────────────────────────
+
+function renderCharts() {
+  const slice  = [...filtered].reverse().slice(-40);
+  const labels = slice.map(r => fmtDateShort(r.timestamp));
+  const rates  = slice.map(r =>
+    r.total ? Math.round((r.total - r.failed) / r.total * 100) : 100
+  );
+
+  if (tChart) tChart.destroy();
+  tChart = new Chart(byId('c-trend'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Pass %',
+        data: rates,
+        borderColor: '#f6ad55',
+        backgroundColor: (ctx) => {
+          const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+          g.addColorStop(0, 'rgba(246,173,85,.15)');
+          g.addColorStop(1, 'rgba(246,173,85,0)');
+          return g;
+        },
+        borderWidth: 1.5,
+        fill: true,
+        tension: .35,
+        pointRadius: 3,
+        pointBackgroundColor: rates.map(v =>
+          v === 100 ? '#68d391' : v >= 90 ? '#f6e05e' : '#fc8181'
+        ),
+        pointBorderColor: 'transparent',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw}%` } }
+      },
+      scales: {
+        y: {
+          min: 0, max: 100,
+          ticks: { callback: v => v + '%', stepSize: 25 },
+          grid: { color: 'rgba(30,40,48,.8)' }
+        },
+        x: {
+          ticks: { maxRotation: 45 },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  const p  = filtered.filter(r => r.status === 'passed').length;
+  const f  = filtered.filter(r => r.status === 'failed').length;
+  const fl = filtered.filter(r => r.status === 'flaky').length;
+
+  if (dChart) dChart.destroy();
+  dChart = new Chart(byId('c-donut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Passed', 'Failed', 'Flaky'],
+      datasets: [{
+        data: [p, f, fl],
+        backgroundColor: [
+          'rgba(104,211,145,.7)',
+          'rgba(252,129,129,.7)',
+          'rgba(246,224,94,.7)',
+        ],
+        borderColor: ['#68d391', '#fc8181', '#f6e05e'],
+        borderWidth: 1,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 14, boxWidth: 8, boxHeight: 8 }
+        }
+      }
+    }
+  });
+}
+
+// ── Table ───────────────────────────────────────────────────────
+
+function renderTable() {
+  const wrap = byId('table-wrap');
+  byId('run-count').textContent = `${filtered.length} run${filtered.length !== 1 ? 's' : ''}`;
+
+  if (!filtered.length) {
+    wrap.innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:3rem;margin-bottom:8px">🎭</div>
+        <h3>No runs match the current filters</h3>
+        <p>Adjust the filters above, or push your first results:<br/>
+          <code>npx playwright test</code><br/>
+          <code>node dashboard/scripts/process-report.js</code></p>
+      </div>`;
+    return;
+  }
+
+  const rows = filtered.slice(0, 300).map(r => {
+    const pct      = r.total ? Math.round((r.total - r.failed) / r.total * 100) : 100;
+    const fillCls  = pct >= 90 ? '' : pct >= 70 ? 'mid' : 'low';
+
+    return `<tr>
+      <td><span class="badge badge-${r.status}">${r.status}</span></td>
+      <td>
+        <div style="font-weight:500;color:var(--head)">${esc(r.project)}</div>
+        <div class="mono-cell">${esc(r.environment)}</div>
+      </td>
+      <td class="mono-cell" style="white-space:nowrap">${fmtDate(r.timestamp)}</td>
+      <td>
+        <div class="prog">
+          <div class="prog-track">
+            <div class="prog-fill ${fillCls}" style="width:${pct}%"></div>
+          </div>
+          <span class="prog-pct">${pct}%</span>
+        </div>
+      </td>
+      <td>
+        <span class="counts">
+          <span class="c-p">${r.passed ?? 0}</span>·<span class="c-f">${r.failed ?? 0}</span>·<span class="c-s">${r.skipped ?? 0}</span>${r.flaky ? `·<span class="c-k">${r.flaky}⚡</span>` : ''}
+        </span>
+      </td>
+      <td class="dur-cell">${fmtDur(r.duration)}</td>
+      <td>${r.branch ? `<span class="branch-tag">${esc(r.branch)}</span>` : '—'}</td>
+      <td>${r.commitSha ? `<span class="sha">${esc(r.commitSha)}</span>` : '—'}</td>
+      <td style="white-space:nowrap">
+        ${r.ciUrl && r.ciUrl !== '#' ? `<a href="${esc(r.ciUrl)}" target="_blank" class="link-sm">ci↗</a> ` : ''}
+        ${r.jsonFile ? `<a href="${esc(r.jsonFile)}" target="_blank" class="link-sm">json↗</a>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Project · Env</th>
+          <th>Date</th>
+          <th>Pass rate</th>
+          <th>P · F · S</th>
+          <th>Duration</th>
+          <th>Branch</th>
+          <th>SHA</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Utils ───────────────────────────────────────────────────────
+
+function byId(id)  { return document.getElementById(id); }
+function set(id, v){ byId(id).textContent = v; }
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('en-GB', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function fmtDateShort(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+}
+
+function fmtDur(ms) {
+  if (!ms) return '—';
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return s + 's';
+  const m = Math.floor(s / 60), rs = s % 60;
+  if (m < 60) return `${m}m ${rs}s`;
+  return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+function reload() {
+  byId('f-proj').innerHTML = '<option value="">All</option>';
+  byId('f-env').innerHTML  = '<option value="">All</option>';
+  load();
+}
+
+// ── Demo data (shown when manifest.json doesn't exist yet) ──────
+
+function demoData() {
+  const projects = ['web-app', 'api', 'mobile'];
+  const envs     = ['staging', 'production', 'ci'];
+  const branches = ['main', 'develop', 'feat/auth', 'fix/nav'];
+  const out = [];
+  for (let i = 0; i < 60; i++) {
+    const total   = 15 + Math.floor(Math.random() * 120);
+    const failed  = Math.random() < .2 ? 1 + Math.floor(Math.random() * 6) : 0;
+    const flaky   = !failed && Math.random() < .1 ? 1 + Math.floor(Math.random() * 3) : 0;
+    const skipped = Math.floor(Math.random() * 3);
+    const passed  = total - failed - skipped;
+    const status  = failed ? 'failed' : flaky ? 'flaky' : 'passed';
+    out.push({
+      id:          `demo-${i}`,
+      timestamp:   new Date(Date.now() - i * .5 * 86400000).toISOString(),
+      project:     projects[i % projects.length],
+      environment: envs[i % envs.length],
+      branch:      branches[i % branches.length],
+      commitSha:   Math.random().toString(36).slice(2, 9),
+      ciUrl:       '',
+      duration:    30000 + Math.floor(Math.random() * 240000),
+      status, passed, failed, skipped, flaky, total,
+      jsonFile: `data/runs/demo-${i}.json`,
+    });
+  }
+  return out;
+}
+
+// ── Init ────────────────────────────────────────────────────────
+load();
+</script>
+</body>
+</html>
