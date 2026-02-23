@@ -1,4 +1,22 @@
 {
-  "lastUpdated": "",
-  "runs": []
+  "lastUpdated": "2026-02-23T12:17:38.443Z",
+  "runs": [
+    {
+      "id": "59e8692f-989e-483b-8003-9bc9133d73d5",
+      "timestamp": "2026-02-23T12:17:38.192Z",
+      "project": "PlaywrightTs",
+      "environment": "staging",
+      "branch": "master",
+      "commitSha": "bfa575d",
+      "ciUrl": "https://github.com/TriffC/PlaywrightTs/actions/runs/22305459752",
+      "duration": 0,
+      "status": "passed",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "total": 0,
+      "jsonFile": "data/runs/PlaywrightTs_staging_1771849058192.json"
+    }
+  ]
 }

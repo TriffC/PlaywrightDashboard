@@ -11,6 +11,27 @@
 
   <style>
     :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface2: #f1f5f9;
+      --border: #e2e8f0;
+      --border2: #cbd5e1;
+      --muted: #64748b;
+      --dim: #94a3b8;
+      --body: #334155;
+      --head: #0f172a;
+      --amber: #f59e0b;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --blue: #3b82f6;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+      --display: 'Syne', sans-serif;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark {
       --bg: #080b0e;
       --surface: #0d1117;
       --surface2: #131920;
@@ -20,14 +41,6 @@
       --dim: #718096;
       --body: #c9d5e0;
       --head: #edf2f7;
-      --amber: #f6ad55;
-      --green: #68d391;
-      --red: #fc8181;
-      --yellow: #f6e05e;
-      --blue: #63b3ed;
-      --mono: 'JetBrains Mono', monospace;
-      --sans: 'DM Sans', sans-serif;
-      --display: 'Syne', sans-serif;
     }
 
     *, *::before, *::after {
@@ -36,26 +49,17 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       font-family: var(--sans);
       background: var(--bg);
       color: var(--body);
       min-height: 100vh;
-      background-image:
-        linear-gradient(rgba(30, 40, 48, .35) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30, 40, 48, .35) 1px, transparent 1px);
-      background-size: 40px 40px;
-      background-position: 0 0;
+      transition: background 0.2s, color 0.2s;
     }
 
     .header {
       border-bottom: 1px solid var(--border);
-      background: rgba(8, 11, 14, .92);
-      backdrop-filter: blur(10px);
+      background: var(--surface);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -64,12 +68,11 @@
     .header-inner {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 clamp(16px, 3vw, 40px);
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 56px;
-      gap: 20px;
     }
 
     .logo {
@@ -87,8 +90,6 @@
       display: grid;
       place-items: center;
       font-size: 17px;
-      flex-shrink: 0;
-      box-shadow: 0 0 20px rgba(246, 173, 85, .3);
     }
 
     .logo-name {
@@ -96,140 +97,63 @@
       font-size: .95rem;
       font-weight: 800;
       color: var(--head);
-      letter-spacing: -.01em;
-    }
-
-    .logo-sub {
-      font-family: var(--mono);
-      font-size: .58rem;
-      color: var(--muted);
-      display: block;
-      letter-spacing: .06em;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .updated-tag {
-      font-family: var(--mono);
-      font-size: .62rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .btn {
-      font-family: var(--mono);
-      font-size: .68rem;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 3px;
-      border: 1px solid var(--border2);
-      background: var(--surface2);
-      color: var(--body);
-      cursor: pointer;
-      transition: border-color .15s, color .15s;
-      letter-spacing: .04em;
-    }
-
-    .btn:hover {
-      border-color: var(--amber);
-      color: var(--amber);
     }
 
     .main {
       max-width: 1400px;
       margin: 0 auto;
-      padding: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 40px);
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: .6rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
+      padding: 32px 24px;
     }
 
     .filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 24px;
-      padding: 14px 16px;
+      padding: 16px;
       border: 1px solid var(--border);
-      border-left: 3px solid var(--amber);
       background: var(--surface);
+      border-radius: 8px;
     }
 
     .filter-field {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      min-width: 130px;
     }
 
     .filter-field label {
       font-family: var(--mono);
-      font-size: .58rem;
-      color: var(--muted);
-      letter-spacing: .08em;
+      font-size: .6rem;
       text-transform: uppercase;
-    }
-
-    .filter-field select,
-    .filter-field input {
-      background: var(--bg);
-      border: 1px solid var(--border2);
-      color: var(--body);
-      font-family: var(--mono);
-      font-size: .72rem;
-      padding: 6px 9px;
-      outline: none;
-      border-radius: 2px;
-      transition: border-color .15s;
-    }
-
-    .filter-field select:focus,
-    .filter-field input:focus {
-      border-color: var(--amber);
-    }
-
-    .filter-field input::placeholder {
       color: var(--muted);
+    }
+
+    .filter-field select, .filter-field input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--body);
+      padding: 6px 12px;
+      border-radius: 4px;
+      outline: none;
     }
 
     .kpi-strip {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 1px;
-      background: var(--border);
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
       margin-bottom: 24px;
     }
 
     .kpi {
       background: var(--surface);
-      padding: 18px 16px 14px;
-      position: relative;
-    }
-
-    .kpi::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--border2);
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
     }
 
     .kpi-label {
-      font-family: var(--mono);
-      font-size: .58rem;
-      letter-spacing: .1em;
+      font-size: .7rem;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 8px;
@@ -237,55 +161,17 @@
 
     .kpi-val {
       font-family: var(--display);
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 800;
       color: var(--head);
-      line-height: 1;
     }
 
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 260px;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .chart-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 20px;
-    }
-
+    /* Table Styles */
     .table-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      margin-bottom: 24px;
-    }
-
-    .table-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-      gap: 12px;
-    }
-
-    .table-title {
-      font-family: var(--display);
-      font-size: .95rem;
-      font-weight: 800;
-      color: var(--head);
-    }
-
-    .run-badge {
-      font-family: var(--mono);
-      font-size: .62rem;
-      color: var(--muted);
-    }
-
-    .table-wrap {
-      overflow-x: auto;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     table {
@@ -293,248 +179,76 @@
       border-collapse: collapse;
     }
 
-    thead th {
-      padding: 9px 14px;
-      font-family: var(--mono);
-      font-size: .58rem;
-      letter-spacing: .1em;
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--surface2);
+      font-size: .7rem;
       text-transform: uppercase;
       color: var(--muted);
-      background: var(--bg);
       border-bottom: 1px solid var(--border);
-      text-align: left;
-      white-space: nowrap;
     }
 
-    tbody td {
-      padding: 11px 14px;
-      font-size: .78rem;
-      border-bottom: 1px solid rgba(30, 40, 48, .6);
-      vertical-align: middle;
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: .85rem;
     }
 
-    tbody tr:hover td {
-      background: rgba(246, 173, 85, .03);
-    }
+    /* Count Colors */
+    .counts { font-family: var(--mono); font-weight: 600; }
+    .c-p { color: var(--green); }
+    .c-f { color: var(--red); }
+    .c-s { color: var(--blue); }
+    .c-k { color: var(--amber); }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-family: var(--mono);
-      font-size: .62rem;
-      font-weight: 600;
-      letter-spacing: .06em;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: .7rem;
+      font-weight: 700;
       text-transform: uppercase;
-      padding: 3px 8px 3px 6px;
-      border-radius: 2px;
-      white-space: nowrap;
     }
+    .badge-passed { background: rgba(16, 185, 129, 0.1); color: var(--green); }
+    .badge-failed { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+    .badge-flaky { background: rgba(245, 158, 11, 0.1); color: var(--amber); }
 
-    .badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .badge-passed {
-      background: rgba(104, 211, 145, .08);
-      color: var(--green);
-      border: 1px solid rgba(104, 211, 145, .2);
-    }
-
-    .badge-passed::before {
-      background: var(--green);
-      box-shadow: 0 0 4px var(--green);
-    }
-
-    .badge-failed {
-      background: rgba(252, 129, 129, .08);
-      color: var(--red);
-      border: 1px solid rgba(252, 129, 129, .2);
-    }
-
-    .badge-failed::before {
-      background: var(--red);
-      box-shadow: 0 0 4px var(--red);
-    }
-
-    .badge-flaky {
-      background: rgba(246, 224, 94, .08);
-      color: var(--yellow);
-      border: 1px solid rgba(246, 224, 94, .2);
-    }
-
-    .badge-flaky::before {
-      background: var(--yellow);
-      box-shadow: 0 0 4px var(--yellow);
-    }
-
-    .prog {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .prog-track {
-      width: 64px;
-      height: 4px;
-      background: var(--border2);
-      border-radius: 2px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .prog-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: var(--green);
-    }
-
-    .prog-fill.mid {
-      background: var(--yellow);
-    }
-
-    .prog-fill.low {
-      background: var(--red);
-    }
-
-    .prog-pct {
-      font-family: var(--mono);
-      font-size: .65rem;
-      color: var(--dim);
-      min-width: 32px;
-    }
-
-    .mono-cell {
-      font-family: var(--mono);
-      font-size: .68rem;
-      color: var(--dim);
-    }
-
-    .sha {
-      font-family: var(--mono);
-      font-size: .68rem;
-      color: var(--blue);
-    }
-
-    .branch-tag {
-      font-family: var(--mono);
-      font-size: .65rem;
+    .btn {
+      padding: 6px 12px;
       background: var(--surface2);
-      border: 1px solid var(--border2);
-      padding: 2px 7px;
-      border-radius: 2px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
       color: var(--body);
+      font-size: .75rem;
     }
 
-    .dur-cell {
-      font-family: var(--mono);
-      font-size: .68rem;
-      color: var(--dim);
-    }
+    .btn:hover { border-color: var(--amber); }
 
-    .empty-state,
-    .loading-state {
-      text-align: center;
-      padding: 64px 24px;
-      color: var(--muted);
-    }
-
-    .empty-state h3 {
-      font-family: var(--display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--head);
-      margin: 12px 0 10px;
-    }
-
-    .empty-state p {
-      font-size: .82rem;
-      max-width: 420px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--border2);
-      border-top-color: var(--amber);
-      border-radius: 50%;
-      animation: spin .65s linear infinite;
-      margin: 0 auto 12px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, .5);
+      background: rgba(0,0,0,0.5);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 300;
+      z-index: 1000;
     }
-
     .modal {
       background: var(--surface);
-      border: 1px solid var(--border);
-      width: min(1100px, 95%);
-      max-height: 85vh;
-      overflow: auto;
-      border-radius: 6px;
-      box-shadow: 0 10px 50px rgba(0, 0, 0, .6);
-    }
-
-    .modal-header {
+      width: 90%;
+      max-width: 1000px;
+      max-height: 80vh;
+      border-radius: 8px;
+      overflow: hidden;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
+      flex-direction: column;
     }
+    .modal-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+    .modal-body { padding: 16px; overflow-y: auto; }
 
-    .modal-body {
-      padding: 12px 16px;
-    }
-
-    .small {
-      font-size: .78rem;
-    }
-
-    .prefs {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .compact {
-      font-family: var(--mono);
-      font-size: .72rem;
-      color: var(--muted);
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 900px) {
-      .charts-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .header-right .updated-tag {
-        display: none;
-      }
-    }
+    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .chart-box { background: var(--surface); padding: 20px; border: 1px solid var(--border); border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -542,28 +256,17 @@
     <div class="header-inner">
       <a class="logo" href="#">
         <div class="logo-icon">🎭</div>
-        <div>
-          <div class="logo-name">Playwright</div>
-          <span class="logo-sub">test run dashboard</span>
-        </div>
+        <div class="logo-name">Playwright Dashboard</div>
       </a>
-      <div class="header-right">
-        <span class="updated-tag" id="updated-tag">—</span>
-        <div class="prefs">
-          <label class="compact"><input type="checkbox" id="pref-dark" /> Dark</label>
-          <label class="compact">Presets <select id="preset-select"></select></label>
-          <button class="btn" onclick="reload()">↻ refresh</button>
-        </div>
+      <div class="prefs">
+        <label><input type="checkbox" id="pref-dark"> Dark Mode</label>
+        <button class="btn" onclick="location.reload()">Refresh</button>
       </div>
     </div>
   </header>
 
   <main class="main">
     <div class="filters">
-      <div class="filter-field">
-        <label>Project</label>
-        <select id="f-proj" onchange="applyFilters()"><option value="">All</option></select>
-      </div>
       <div class="filter-field">
         <label>Environment</label>
         <select id="f-env" onchange="applyFilters()"><option value="">All</option></select>
@@ -574,693 +277,176 @@
           <option value="">All</option>
           <option value="passed">Passed</option>
           <option value="failed">Failed</option>
-          <option value="flaky">Flaky</option>
         </select>
       </div>
       <div class="filter-field">
-        <label>Period</label>
-        <select id="f-days" onchange="applyFilters()">
-          <option value="7">7 days</option>
-          <option value="30" selected>30 days</option>
-          <option value="90">90 days</option>
-          <option value="0">All time</option>
-        </select>
-      </div>
-      <div class="filter-field" style="flex:1;min-width:160px">
-        <label>Branch / SHA</label>
-        <input id="f-q" type="text" placeholder="main, feat/*, abc1234…" oninput="applyFilters()"/>
-      </div>
-      <div class="filter-field">
-        <label>Compare</label>
-        <div style="display:flex;gap:8px">
-          <button class="btn" id="compare-btn" onclick="openCompare()" disabled>Compare runs</button>
-        </div>
+        <button class="btn" id="compare-btn" onclick="openCompare()" disabled>Compare Selected</button>
       </div>
     </div>
 
-    <div class="section-label">overview</div>
-    <div class="kpi-strip" id="kpi-strip">
-      <div class="kpi accent"><div class="kpi-label">Runs</div><div class="kpi-val" id="k-runs">—</div><div class="kpi-sub">in period</div></div>
-      <div class="kpi success"><div class="kpi-label">Pass rate</div><div class="kpi-val" id="k-rate">—</div><div class="kpi-sub" id="k-rate-sub">—</div></div>
-      <div class="kpi danger"><div class="kpi-label">Failed</div><div class="kpi-val" id="k-fail">—</div><div class="kpi-sub">runs</div></div>
-      <div class="kpi warn"><div class="kpi-label">Flaky</div><div class="kpi-val" id="k-flaky">—</div><div class="kpi-sub">runs</div></div>
-      <div class="kpi"><div class="kpi-label">Avg duration</div><div class="kpi-val" id="k-dur">—</div><div class="kpi-sub">per run</div></div>
-      <div class="kpi"><div class="kpi-label">Tests run</div><div class="kpi-val" id="k-tests">—</div><div class="kpi-sub">total</div></div>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-label">Total Runs</div><div class="kpi-val" id="k-runs">—</div></div>
+      <div class="kpi"><div class="kpi-label">Pass Rate</div><div class="kpi-val" id="k-rate">—</div></div>
+      <div class="kpi"><div class="kpi-label">Avg Duration</div><div class="kpi-val" id="k-dur">—</div></div>
     </div>
 
     <div class="charts-row">
-      <div class="chart-box">
-        <h3>pass rate — last 40 runs</h3>
-        <canvas id="c-trend"></canvas>
-        <div style="margin-top:8px;font-family:var(--mono);font-size:.72rem;color:var(--muted)">Moving avg (5): <span id="moving-avg">—</span></div>
-      </div>
-
-      <div>
-        <div class="chart-box" style="margin-bottom:12px">
-          <h3>status breakdown</h3>
-          <canvas id="c-donut"></canvas>
-        </div>
-
-        <div class="chart-box">
-          <h3>duration distribution</h3>
-          <canvas id="c-hist"></canvas>
-        </div>
-      </div>
+      <div class="chart-box"><h3>Trend</h3><canvas id="c-trend"></canvas></div>
+      <div class="chart-box"><h3>Breakdown</h3><canvas id="c-donut"></canvas></div>
     </div>
 
-    <div class="section-label">health — top problematic tests</div>
-    <div class="table-card" style="margin-bottom:18px">
-      <div class="table-head">
-        <span class="table-title">Top failing / flaky tests</span>
-        <span class="run-badge">based on last <select id="health-window" onchange="renderHealth()"><option value="10">10 runs</option><option value="25" selected>25 runs</option><option value="50">50 runs</option></select></span>
-      </div>
-      <div class="table-wrap" id="health-wrap">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Computing health…</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-label">run history</div>
     <div class="table-card">
-      <div class="table-head">
-        <span class="table-title">Runs</span>
-        <span class="run-badge" id="run-count">0 runs</span>
-      </div>
-      <div class="table-wrap" id="table-wrap">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Loading…</p>
-        </div>
-      </div>
+      <div id="table-wrap">Loading runs...</div>
     </div>
   </main>
 
-  <!-- Modals -->
   <div id="modal-backdrop" class="modal-backdrop">
-    <div class="modal" role="dialog" aria-modal="true" id="modal">
-      <div class="modal-header">
-        <div id="modal-title">Run details</div>
-        <div>
-          <button class="btn" onclick="closeModal()">Close</button>
-        </div>
-      </div>
-      <div class="modal-body" id="modal-body">
-        <div class="loading-state"><div class="spinner"></div><p>Loading details…</p></div>
-      </div>
+    <div class="modal">
+      <div class="modal-header"><h3 id="modal-title">Details</h3><button onclick="closeModal()">×</button></div>
+      <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
 
   <script>
-    /* Enhanced dashboard client-side script
-       - Fetches manifest.json
-       - Uses runs[].testsFile (created by process-report) for fast test-level data
-       - Provides: drill-down, comparisons, health aggregation, histograms, prefs
-    */
-
     let allRuns = [], filtered = [];
-    let tChart = null, dChart = null, hChart = null;
-    const CHART_COLORS = { amber:'#f6ad55', green:'#68d391', red:'#fc8181', yellow:'#f6e05e' };
-    Chart.defaults.color = '#b8c2cc';
-    Chart.defaults.borderColor = '#1e2830';
+    let tChart, dChart;
 
     async function load() {
-      // prefs
-      document.getElementById('pref-dark').checked = localStorage.getItem('pref-dark') === '1';
-      document.getElementById('pref-dark').addEventListener('change', (e) => {
-        localStorage.setItem('pref-dark', e.target.checked ? '1':'0');
-        document.body.classList.toggle('dark', e.target.checked);
-      });
+      const isDark = localStorage.getItem('pref-dark') === '1';
+      document.getElementById('pref-dark').checked = isDark;
+      if (isDark) document.body.classList.add('dark');
 
-      // presets select
-      const presetSelect = document.getElementById('preset-select');
-      presetSelect.innerHTML = '<option value="">— save / load —</option>';
-      const presets = JSON.parse(localStorage.getItem('dash-presets')||'{}');
-      for (const k of Object.keys(presets)) {
-        const opt = document.createElement('option');
-        opt.value = k;
-        opt.textContent = k;
-        presetSelect.appendChild(opt);
-      }
-      presetSelect.addEventListener('change', () => {
-        const k = presetSelect.value;
-        if (!k) return;
-        const p = presets[k];
-        if (p) { applyPreset(p); }
+      document.getElementById('pref-dark').addEventListener('change', (e) => {
+        const dark = e.target.checked;
+        localStorage.setItem('pref-dark', dark ? '1' : '0');
+        document.body.classList.toggle('dark', dark);
       });
 
       try {
         const r = await fetch('./data/manifest.json?_=' + Date.now());
-        if (!r.ok) throw new Error('not found');
         const m = await r.json();
         allRuns = m.runs || [];
-        document.getElementById('updated-tag').textContent = 'updated ' + fmtDate(m.lastUpdated);
       } catch (e) {
-        console.warn('Manifest not found, demo mode', e);
-        document.getElementById('updated-tag').textContent = 'demo mode';
         allRuns = demoData();
       }
 
-      // Populate filters
-      const pSel = byId('f-proj'), eSel = byId('f-env');
-      unique(allRuns,'project').forEach(v => addOption(pSel, v));
-      unique(allRuns,'environment').forEach(v => addOption(eSel, v));
+      const eSel = document.getElementById('f-env');
+      [...new Set(allRuns.map(r => r.environment))].forEach(env => {
+        const opt = document.createElement('option'); opt.value = opt.textContent = env; eSel.appendChild(opt);
+      });
 
       applyFilters();
     }
 
-    function addOption(sel,val){
-      const o = document.createElement('option');
-      o.value = o.textContent = val;
-      sel.appendChild(o);
-    }
-
-    function unique(arr,key){
-      return [...new Set(arr.map(r=>r[key]).filter(Boolean))].sort();
-    }
-
     function applyFilters() {
-      const proj = byId('f-proj').value;
-      const env  = byId('f-env').value;
-      const status= byId('f-status').value;
-      const days = +byId('f-days').value;
-      const q = byId('f-q').value.toLowerCase();
-      const cutoff = days ? new Date(Date.now() - days*86400000) : null;
+      const env = document.getElementById('f-env').value;
+      const status = document.getElementById('f-status').value;
 
-      filtered = allRuns.filter(r=>{
-        if (proj && r.project !== proj) return false;
+      filtered = allRuns.filter(r => {
         if (env && r.environment !== env) return false;
         if (status && r.status !== status) return false;
-        if (cutoff && new Date(r.timestamp) < cutoff) return false;
-        if (q) {
-          const hay = [r.branch, r.commitSha, r.project, r.environment, r.jsonFile].join(' ').toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
         return true;
       });
 
-      // persist last filters as preset default
       renderKPIs();
       renderCharts();
       renderTable();
-      renderHealth();
     }
 
     function renderKPIs() {
       const n = filtered.length;
-      const passed = filtered.filter(r=>r.status==='passed').length;
-      const failed = filtered.filter(r=>r.status==='failed').length;
-      const flaky  = filtered.filter(r=>r.status==='flaky').length;
-      const rate = n ? Math.round(passed/n*100) : 0;
-      const avgDur = n ? Math.round(filtered.reduce((s,r)=>s+(r.duration||0),0)/n) : 0;
-      const tests = filtered.reduce((s,r)=>s+(r.total||0),0);
-
-      set('k-runs', n);
-      set('k-rate', rate + '%');
-      set('k-rate-sub', `${passed} of ${n} runs`);
-      set('k-fail', failed);
-      set('k-flaky', flaky);
-      set('k-dur', fmtDur(avgDur));
-      set('k-tests', tests.toLocaleString());
+      const passed = filtered.filter(r => r.status === 'passed').length;
+      document.getElementById('k-runs').textContent = n;
+      document.getElementById('k-rate').textContent = n ? Math.round(passed/n*100) + '%' : '0%';
+      const avg = n ? filtered.reduce((a, b) => a + (b.duration || 0), 0) / n : 0;
+      document.getElementById('k-dur').textContent = (avg / 1000).toFixed(1) + 's';
     }
-
-    function renderCharts() {
-      const slice = [...filtered].reverse().slice(-40);
-      const labels = slice.map(r => fmtDateShort(r.timestamp));
-      const rates = slice.map(r => r.total ? Math.round((r.total - r.failed)/r.total*100) : 100);
-      const durations = slice.map(r => Math.round((r.duration||0)/1000));
-
-      // trend
-      if (tChart) tChart.destroy();
-      tChart = new Chart(byId('c-trend'), {
-        type:'line',
-        data:{
-          labels,
-          datasets:[{
-            label:'Pass %',
-            data:rates,
-            borderColor:CHART_COLORS.amber,
-            backgroundColor:ctx=>{
-              const g = ctx.chart.ctx.createLinearGradient(0,0,0,200);
-              g.addColorStop(0,'rgba(246,173,85,.15)');
-              g.addColorStop(1,'rgba(246,173,85,0)');
-              return g;
-            },
-            fill:true,
-            tension:.35,
-            pointRadius:3,
-            pointBackgroundColor:rates.map(v=>v===100?CHART_COLORS.green:v>=90?CHART_COLORS.yellow:CHART_COLORS.red)
-          }]
-        },
-        options:{
-          responsive:true,
-          plugins:{ legend:{ display:false } },
-          scales:{
-            y:{ min:0, max:100, ticks:{ callback:v=>v+'%' } },
-            x:{ grid:{ display:false } }
-          }
-        }
-      });
-
-      // moving average label
-      const movAvg = movingAverage(rates,5);
-      document.getElementById('moving-avg').textContent = movAvg.length ? Math.round(movAvg[movAvg.length-1]) + '%' : '—';
-
-      // donut
-      const p = filtered.filter(r=>r.status==='passed').length;
-      const f = filtered.filter(r=>r.status==='failed').length;
-      const fl = filtered.filter(r=>r.status==='flaky').length;
-      if (dChart) dChart.destroy();
-      dChart = new Chart(byId('c-donut'), {
-        type:'doughnut',
-        data:{
-          labels:['Passed','Failed','Flaky'],
-          datasets:[{
-            data:[p,f,fl],
-            backgroundColor:[CHART_COLORS.green,CHART_COLORS.red,CHART_COLORS.yellow],
-            borderColor:[CHART_COLORS.green,CHART_COLORS.red,CHART_COLORS.yellow],
-            borderWidth:1
-          }]
-        },
-        options:{
-          cutout:'70%',
-          plugins:{ legend:{ position:'bottom' } }
-        }
-      });
-
-      // histogram (duration distribution) - collect test durations from recent tests summaries lazily
-      renderHistogram();
-    }
-
-    async function renderHistogram() {
-      // get first N runs (from filtered) that have testsFile (prefer recent)
-      const runsWithTests = filtered.slice(0).reverse().filter(r => r.testsFile).slice(0, 20);
-      const durations = [];
-      for (const r of runsWithTests) {
-        try {
-          const resp = await fetch(r.testsFile + '?_=' + Date.now());
-          if (!resp.ok) continue;
-          const tlist = await resp.json();
-          tlist.forEach(t => { if (t.duration) durations.push(Math.round(t.duration/1000)); });
-        } catch(e){ /* ignore */ }
-      }
-      // histogram bins
-      const bins = [0,1,2,5,10,20,60].map(x=>x); // seconds
-      const counts = bins.map(() => 0);
-      durations.forEach(d => {
-        let placed = false;
-        for (let i=0;i<bins.length;i++){
-          if (d <= bins[i]) { counts[i]++; placed=true; break; }
-        }
-        if (!placed) counts[counts.length-1]++; // overflow
-      });
-      const labels = bins.map(b => b + 's');
-      if (hChart) hChart.destroy();
-      hChart = new Chart(byId('c-hist'), {
-        type:'bar',
-        data:{
-          labels,
-          datasets:[{
-            label:'tests',
-            data:counts,
-            backgroundColor:CHART_COLORS.blue,
-            borderColor:CHART_COLORS.blue
-          }]
-        },
-        options:{
-          plugins:{ legend:{ display:false } },
-          scales:{ y:{ beginAtZero:true } }
-        }
-      });
-    }
-
-    function movingAverage(data, windowSize=5){
-      if (!data || !data.length) return [];
-      const res=[];
-      for (let i=0;i<data.length;i++){
-        const start=Math.max(0,i-windowSize+1);
-        const win=data.slice(start,i+1);
-        const avg = Math.round(win.reduce((a,b)=>a+b,0)/win.length);
-        res.push(avg);
-      }
-      return res;
-    }
-
-    // ---------------- Health (aggregate top failing/flaky tests) ----------------
-
-    async function renderHealth() {
-      const wrap = byId('health-wrap');
-      wrap.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Computing health…</p></div>`;
-      const windowRuns = +byId('health-window').value || 25;
-      const recent = [...filtered].slice(0, windowRuns);
-
-      // fetch tests-file summaries for those runs (parallel up to limit)
-      const promises = recent.map(r => r.testsFile ? fetch(r.testsFile).then(res => res.ok ? res.json() : null).catch(()=>null) : null);
-      const results = await Promise.all(promises);
-
-      // aggregate by test title
-      const map = new Map();
-      for (let i=0;i<results.length;i++){
-        const arr = results[i];
-        if (!arr) continue;
-        for (const t of arr) {
-          const key = t.title;
-          const rec = map.get(key) || {title:t.title, runs:0, failures:0, flakies:0, totalDuration:0, samples:0};
-          rec.runs++;
-          if (t.status === 'unexpected') rec.failures++;
-          if (t.status === 'flaky') rec.flakies++;
-          if (t.duration) { rec.totalDuration += t.duration; rec.samples++; }
-          map.set(key,rec);
-        }
-      }
-
-      const arr = Array.from(map.values());
-      // compute failureRate and avgDuration
-      arr.forEach(r => { r.failRate = r.runs ? Math.round(r.failures / r.runs * 100) : 0; r.avgDuration = r.samples ? Math.round(r.totalDuration / r.samples) : 0; });
-      // sort by failures desc then flakies desc
-      arr.sort((a,b) => (b.failures - a.failures) || (b.flakies - a.flakies) || (b.failRate - a.failRate));
-
-      if (!arr.length) {
-        wrap.innerHTML = `<div class="empty-state"><h3>No test-level data available</h3><p>Make sure process-report is writing tests summaries (testsFile) and that your manifest includes testsFile pointers.</p></div>`;
-        return;
-      }
-      const rows = arr.slice(0, 50).map(r=>`
-        <tr>
-          <td>${r.failures ? `<span class="badge badge-failed">${r.failures}F</span>` : r.flakies ? `<span class="badge badge-flaky">${r.flakies}⚡</span>` : `<span class="badge badge-passed">OK</span>`}</td>
-          <td style="font-weight:500;color:var(--head)">${esc(r.title)}</td>
-          <td class="mono-cell">${r.runs}</td>
-          <td class="mono-cell">${r.failRate}%</td>
-          <td class="mono-cell">${fmtDur(r.avgDuration)}</td>
-        </tr>
-      `).join('');
-      wrap.innerHTML = `<table><thead><tr><th></th><th>Test</th><th>Runs</th><th>Fail %</th><th>Avg dur</th></tr></thead><tbody>${rows}</tbody></table>`;
-    }
-
-    // ---------------- Table (run history) ----------------
 
     function renderTable() {
-      const wrap = byId('table-wrap');
-      byId('run-count').textContent = `${filtered.length} run${filtered.length!==1?'s':''}`;
+      const rows = filtered.map((r, idx) => `
+        <tr>
+          <td><input type="checkbox" onchange="onSelectRun(this, ${idx})"></td>
+          <td><span class="badge badge-${r.status}">${r.status}</span></td>
+          <td>${r.project} <br><small style="color:var(--muted)">${r.environment}</small></td>
+          <td>${new Date(r.timestamp).toLocaleDateString()}</td>
+          <td class="counts">
+            <span class="c-p">${r.passed || 0}</span> / 
+            <span class="c-f">${r.failed || 0}</span> / 
+            <span class="c-s">${r.skipped || 0}</span>
+          </td>
+          <td>${(r.duration / 1000).toFixed(1)}s</td>
+          <td><button class="btn" onclick='openRunDetails(${idx})'>Details</button></td>
+        </tr>
+      `).join('');
 
-      if (!filtered.length) {
-        wrap.innerHTML = `<div class="empty-state"><div style="font-size:3rem;margin-bottom:8px">🎭</div><h3>No runs match the current filters</h3><p>Adjust the filters above, or push your first results:<br/><code>npx playwright test</code><br/><code>node dashboard/scripts/process-report.js</code></p></div>`;
-        return;
-      }
-
-      // allow selecting two runs for compare
-      const rows = filtered.slice(0, 300).map((r, idx) => {
-        const pct = r.total ? Math.round((r.total - r.failed)/r.total*100) : 100;
-        const fillCls = pct >= 90 ? '' : pct >= 70 ? 'mid' : 'low';
-        return `
-          <tr>
-            <td><input type="checkbox" data-idx="${idx}" onchange="onSelectRun(this)"/></td>
-            <td><span class="badge badge-${r.status}">${r.status}</span></td>
-            <td>
-              <div style="font-weight:500;color:var(--head)">${esc(r.project)}</div>
-              <div class="mono-cell">${esc(r.environment)}</div>
-            </td>
-            <td class="mono-cell" style="white-space:nowrap">${fmtDate(r.timestamp)}</td>
-            <td><div class="prog"><div class="prog-track"><div class="prog-fill ${fillCls}" style="width:${pct}%"></div></div><span class="prog-pct">${pct}%</span></div></td>
-            <td><span class="counts"><span class="c-p">${r.passed ?? 0}</span>·<span class="c-f">${r.failed ?? 0}</span>·<span class="c-s">${r.skipped ?? 0}</span>${r.flaky ? `·<span class="c-k">${r.flaky}⚡</span>` : ''}</span></td>
-            <td class="dur-cell">${fmtDur(r.duration)}</td>
-            <td>${r.branch ? `<span class="branch-tag">${esc(r.branch)}</span>` : '—'}</td>
-            <td>${r.commitSha ? `<span class="sha">${esc(r.commitSha)}</span>` : '—'}</td>
-            <td style="white-space:nowrap">
-              ${r.ciUrl && r.ciUrl !== '#' ? `<a href="${esc(r.ciUrl)}" target="_blank" class="link-sm">ci↗</a>` : ''}
-              ${r.jsonFile ? `<a href="${esc(r.jsonFile)}" target="_blank" class="link-sm">json↗</a>` : ''}
-              ${r.testsFile ? ` <a href="${esc(r.testsFile)}" target="_blank" class="link-sm">tests↗</a>` : ''}
-              <button class="btn" style="margin-left:8px" onclick="openRunDetails(${JSON.stringify(escapeForInline(r)).replace(/</g,'\\<')})">Details</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      wrap.innerHTML = `
+      document.getElementById('table-wrap').innerHTML = `
         <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Status</th>
-              <th>Project · Env</th>
-              <th>Date</th>
-              <th>Pass rate</th>
-              <th>P · F · S</th>
-              <th>Duration</th>
-              <th>Branch</th>
-              <th>SHA</th>
-              <th>Links</th>
-            </tr>
-          </thead>
+          <thead><tr><th></th><th>Status</th><th>Project</th><th>Date</th><th>P/F/S</th><th>Duration</th><th></th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       `;
     }
 
-    // allow selecting up to 2 runs for compare
-    let selectedForCompare = [];
-    function onSelectRun(cb) {
-      const idx = +cb.getAttribute('data-idx');
-      if (cb.checked) {
-        if (selectedForCompare.length >= 2) { cb.checked = false; alert('Select at most two runs to compare'); return; }
-        selectedForCompare.push(filtered[idx]);
-      } else {
-        selectedForCompare = selectedForCompare.filter(r => r !== filtered[idx]);
-      }
-      document.getElementById('compare-btn').disabled = selectedForCompare.length !== 2;
+    let selected = [];
+    function onSelectRun(cb, idx) {
+      if (cb.checked) selected.push(filtered[idx]);
+      else selected = selected.filter(s => s !== filtered[idx]);
+      document.getElementById('compare-btn').disabled = selected.length !== 2;
     }
 
-    // Open compare modal
-    async function openCompare() {
-      if (selectedForCompare.length !== 2) return;
-      openModal('Compare runs', '<div class="loading-state"><div class="spinner"></div><p>Loading comparison…</p></div>');
-      const [a,b] = selectedForCompare;
-      const [aTests,bTests] = await Promise.all([
-        fetch(a.testsFile).then(r=>r.ok?r.json():null).catch(()=>null),
-        fetch(b.testsFile).then(r=>r.ok?r.json():null).catch(()=>null)
-      ]);
-      if (!aTests || !bTests) {
-        document.getElementById('modal-body').innerHTML = `<div class="empty-state"><h3>Missing tests data</h3><p>One of the selected runs has no tests summary. Ensure process-report wrote testsFile for both runs.</p></div>`;
-        return;
-      }
-      // index by test title
-      const mapB = new Map(bTests.map(t=>[t.title,t]));
-      const rows = aTests.map(t => {
-        const tb = mapB.get(t.title);
-        const sameStatus = tb && tb.status === t.status;
-        return `
-          <tr>
-            <td class="mono-cell">${esc(t.title)}</td>
-            <td class="mono-cell">${t.status}</td>
-            <td class="mono-cell">${fmtDur(t.duration)}</td>
-            <td class="mono-cell">${tb ? tb.status : '—'}</td>
-            <td class="mono-cell">${tb ? fmtDur(tb.duration) : '—'}</td>
-          </tr>
-        `;
-      }).join('');
-      document.getElementById('modal-body').innerHTML = `
-        <div style="padding:8px 0">
-          <strong>Left:</strong> ${esc(a.project)} ${esc(a.environment)} ${fmtDate(a.timestamp)} &nbsp;&nbsp;
-          <strong>Right:</strong> ${esc(b.project)} ${esc(b.environment)} ${fmtDate(b.timestamp)}
-        </div>
-        <div style="max-height:60vh;overflow:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Test</th>
-                <th>Left status</th>
-                <th>Left dur</th>
-                <th>Right status</th>
-                <th>Right dur</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-      `;
-    }
+    async function openRunDetails(idx) {
+      const run = filtered[idx];
+      document.getElementById('modal-title').textContent = `Run Details: ${run.project}`;
+      document.getElementById('modal-backdrop').style.display = 'flex';
+      document.getElementById('modal-body').innerHTML = 'Loading...';
 
-    // Open run details modal
-    async function openRunDetails(run) {
-      openModal('Run details', '<div class="loading-state"><div class="spinner"></div><p>Loading details…</p></div>');
-      // Prefer compact testsFile; fall back to jsonFile
-      const src = run.testsFile || run.jsonFile;
-      if (!src) {
-        document.getElementById('modal-body').innerHTML = `<div class="empty-state"><h3>No details</h3></div>`;
-        return;
-      }
       try {
-        const resp = await fetch(src + '?_=' + Date.now());
-        const list = await resp.json();
-        // If this is a compact tests summary (array of items), render it
-        if (Array.isArray(list)) {
-          const rows = list.map(t => `
-            <tr>
-              <td><span class="badge badge-${t.status==='unexpected'?'failed':t.status==='flaky'?'flaky':'passed'}">${t.status}</span></td>
-              <td style="font-weight:500">${esc(t.title)}</td>
-              <td class="mono-cell">${fmtDur(t.duration)}</td>
-              <td style="max-width:40ch"><div class="mono-cell">${esc(t.error || '')}</div></td>
-            </tr>
-          `).join('');
-          document.getElementById('modal-body').innerHTML = `
-            <div style="margin-bottom:8px" class="mono-cell">Run: ${esc(run.project)} · ${esc(run.environment)} · ${fmtDate(run.timestamp)}</div>
-            <div style="max-height:60vh;overflow:auto">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Test</th>
-                    <th>Duration</th>
-                    <th>Error</th>
-                  </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-              </table>
-            </div>
-          `;
-        } else {
-          // If full Playwright JSON, traverse and build a table
-          const tests = [];
-          function walk(suites, ancestors=[]) {
-            if (!suites) return;
-            for (const s of suites) {
-              const next = ancestors.slice();
-              if (s.title) next.push(s.title);
-              for (const spec of (s.specs||[])) {
-                const specName = spec.title || spec.file || '';
-                for (const test of (spec.tests||[])) {
-                  const title = [...next, specName, test.title].filter(Boolean).join(' › ');
-                  let err = '';
-                  let dur = 0;
-                  for (const r of (test.results || [])) {
-                    if (r.duration) dur = Math.max(dur, r.duration);
-                    if (r.error && !err) err = (r.error?.message || r.error || '');
-                  }
-                  tests.push({ title, status: test.status, duration:dur, error:err });
-                }
-              }
-              walk(s.suites, next);
-            }
-          }
-          walk(list.suites||[]);
-          const rows = tests.map(t=>`
-            <tr>
-              <td><span class="badge badge-${t.status==='unexpected'?'failed':t.status==='flaky'?'flaky':'passed'}">${t.status}</span></td>
-              <td style="font-weight:500">${esc(t.title)}</td>
-              <td class="mono-cell">${fmtDur(t.duration)}</td>
-              <td style="max-width:40ch"><div class="mono-cell">${esc(t.error||'')}</div></td>
-            </tr>
-          `).join('');
-          document.getElementById('modal-body').innerHTML = `
-            <div style="margin-bottom:8px" class="mono-cell">Run: ${esc(run.project)} · ${esc(run.environment)} · ${fmtDate(run.timestamp)}</div>
-            <div style="max-height:60vh;overflow:auto">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Test</th>
-                    <th>Duration</th>
-                    <th>Error</th>
-                  </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-              </table>
-            </div>
-          `;
-        }
+        const res = await fetch(run.testsFile || run.jsonFile);
+        const data = await res.json();
+        const tests = Array.isArray(data) ? data : []; // Simplified for demo
+        const rows = tests.map(t => `
+          <tr>
+            <td><span class="badge badge-${t.status === 'expected' ? 'passed' : 'failed'}">${t.status}</span></td>
+            <td>${t.title}</td>
+            <td>${(t.duration / 1000).toFixed(2)}s</td>
+          </tr>
+        `).join('');
+        document.getElementById('modal-body').innerHTML = `<table><thead><tr><th>Status</th><th>Test</th><th>Duration</th></tr></thead><tbody>${rows}</tbody></table>`;
       } catch (e) {
-        document.getElementById('modal-body').innerHTML = `<div class="empty-state"><h3>Failed to load details</h3><p>${esc(e.message)}</p></div>`;
+        document.getElementById('modal-body').innerHTML = 'Could not load test details.';
       }
     }
 
-    function openModal(title, html) {
-      byId('modal-title').textContent = title;
-      byId('modal-body').innerHTML = html;
-      const bd = byId('modal-backdrop');
-      bd.style.display = 'flex';
+    function closeModal() { document.getElementById('modal-backdrop').style.display = 'none'; }
+
+    function renderCharts() {
+      const ctxT = document.getElementById('c-trend').getContext('2d');
+      if (tChart) tChart.destroy();
+      tChart = new Chart(ctxT, {
+        type: 'line',
+        data: {
+          labels: filtered.slice(-10).map(r => new Date(r.timestamp).toLocaleDateString()),
+          datasets: [{ label: 'Pass Rate', data: filtered.slice(-10).map(r => (r.passed/r.total)*100), borderColor: '#f59e0b', tension: 0.3 }]
+        }
+      });
+
+      const ctxD = document.getElementById('c-donut').getContext('2d');
+      if (dChart) dChart.destroy();
+      const p = filtered.filter(r => r.status === 'passed').length;
+      const f = filtered.filter(r => r.status === 'failed').length;
+      dChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: { labels: ['Pass', 'Fail'], datasets: [{ data: [p, f], backgroundColor: ['#10b981', '#ef4444'] }] }
+      });
     }
 
-    function closeModal(){
-      byId('modal-backdrop').style.display = 'none';
+    function demoData() {
+      return Array.from({length: 10}, (_, i) => ({
+        project: 'Demo Project', environment: 'CI', status: i % 3 === 0 ? 'failed' : 'passed',
+        timestamp: new Date().toISOString(), passed: 10, failed: i % 3 === 0 ? 2 : 0, skipped: 1, total: 13, duration: 45000
+      }));
     }
 
-    // ---------------- Preferences (save presets) ----------------
-
-    function applyPreset(p){
-      if (!p) return;
-      byId('f-proj').value = p.proj || '';
-      byId('f-env').value = p.env || '';
-      byId('f-status').value = p.status || '';
-      byId('f-days').value = p.days || '30';
-      byId('f-q').value = p.q || '';
-      applyFilters();
-    }
-
-    function savePreset(name) {
-      const presets = JSON.parse(localStorage.getItem('dash-presets')||'{}');
-      presets[name] = {
-        proj: byId('f-proj').value,
-        env: byId('f-env').value,
-        status: byId('f-status').value,
-        days: byId('f-days').value,
-        q: byId('f-q').value
-      };
-      localStorage.setItem('dash-presets', JSON.stringify(presets));
-      alert('Preset saved: ' + name);
-    }
-
-    // ---------------- Utilities ----------------
-
-    function byId(id){ return document.getElementById(id); }
-    function set(id, v){ byId(id).textContent = v; }
-    function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-    function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleString(); }
-    function fmtDateShort(iso){ if(!iso) return ''; return new Date(iso).toLocaleDateString(); }
-    function fmtDur(ms){ if (!ms) return '—'; const s=Math.floor(ms/1000); if (s<60) return s+'s'; const m=Math.floor(s/60), rs=s%60; if (m<60) return `${m}m ${rs}s`; return `${Math.floor(m/60)}h ${m%60}m`; }
-
-    // demoData (used if manifest missing, ensure testsFile present in demo)
-    function demoData(){
-      const projects=['web-app','api','mobile'];
-      const envs=['staging','production','ci'];
-      const branches=['main','develop','feat/auth','fix/nav'];
-      const out=[];
-      for (let i=0;i<60;i++){
-        const total=15+Math.floor(Math.random()*120);
-        const failed=Math.random()<.2?1+Math.floor(Math.random()*6):0;
-        const flaky = !failed && Math.random()<.1?1+Math.floor(Math.random()*3):0;
-        const skipped = Math.floor(Math.random()*3);
-        const passed = total - failed - skipped;
-        const status = failed ? 'failed' : flaky ? 'flaky' : 'passed';
-        out.push({
-          id:`demo-${i}`,
-          timestamp:new Date(Date.now()-i*.5*86400000).toISOString(),
-          project:projects[i%projects.length],
-          environment:envs[i%envs.length],
-          branch:branches[i%branches.length],
-          commitSha:Math.random().toString(36).slice(2,9),
-          ciUrl:'',
-          duration:30000+Math.floor(Math.random()*240000),
-          status,
-          passed,
-          failed,
-          skipped,
-          flaky,
-          total,
-          jsonFile:`data/runs/demo-${i}.json`,
-          testsFile:`data/runs/demo-${i}-tests.json`
-        });
-      }
-      return out;
-    }
-
-    // small helpers for creating safe inline JSON for onclick
-    function escapeForInline(obj){
-      // returns a plain object with primitive values (avoid functions)
-      const copy = {...obj};
-      return copy;
-    }
-
-    // ---------------- Init ----------------
     load();
   </script>
 </body>
